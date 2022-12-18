@@ -1,26 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
-import { UpdateTodoDto } from './dto/update-todo.dto';
+
+import { Todo } from './entities/todo.entity';
 
 @Injectable()
 export class TodosService {
-  create(createTodoDto: CreateTodoDto) {
-    return 'This action adds a new todo';
+  async create(createTodoDto: CreateTodoDto) {
+    const todo = Todo.create({ ...createTodoDto });
+    return await todo.save();
   }
 
-  findAll() {
-    return `This action returns all todos`;
+  async findAll() {
+    return Todo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} todo`;
+  async findOne(id: number) {
+    const todos = await Todo.find();
+    return todos.find((todo) => todo.id === id);
   }
 
-  update(id: number, updateTodoDto: UpdateTodoDto) {
-    return `This action updates a #${id} todo`;
+  async update(updateTodoDto: CreateTodoDto) {
+    return await this.create(updateTodoDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} todo`;
+  async remove(id: number) {
+    const todos = await Todo.find();
+    const todo = todos.find((todo) => todo.id === id);
+
+    return await Todo.remove(todo);
   }
 }
