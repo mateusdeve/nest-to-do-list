@@ -1,0 +1,29 @@
+version: '3'
+services:
+  mysqlsrv:
+    image: mysql:5.7
+    container_name: 'mysql2'
+    env_file:
+      - ./.env
+    ports:
+      - '3306:3306'
+    volumes:
+      - ~/.docker-conf/mysql/data/:/var/lib/mysql
+    networks:
+      - app-network
+
+  aplication:
+    container_name: 'to-do-list'
+    build:
+      context: .
+    image: nestjs-api-dev:1.0.0
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 8080:8080
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
